@@ -2,8 +2,39 @@ package com.TowerDefense.resources;
 
 import java.util.Arrays;
 import java.util.Random;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.util.*;
 
 public class PoblacionEnemigos {
+	
+	
+	int FILAS = 2000, COLUMNAS = 5, cantHIJOS = 20;
+	int[][] POBLACION = new int[FILAS][COLUMNAS];
+	int GENERACIONES = 50;
+	int genActual = 0;
+	int lastPost = 0;
+	Random rnd = new Random();
+	String tipo;
+	//Nodos del XML
+	Node nodoPob, nodoIni, nodoPos, nodoGen;
 	/*
 	 * j0 = Vida                            
 	 * j1 = Resistencia a Flechas            
@@ -21,13 +52,6 @@ public class PoblacionEnemigos {
 	 * pM = porcentaje de la resistencia a la magia
 	 * pA = porcentaje de la resistencia a la artilleria
 	 */	
-	int FILAS = 600, COLUMNAS = 5, cantHIJOS = 20;
-	int[][] POBLACION = new int[FILAS][COLUMNAS];
-	int GENERACIONES = 50;
-	int genActual = 0;
-	int lastPost = 0;
-	Random rnd = new Random();
-	String tipo;
 	double pV;
 	double pF;
 	double pM;
@@ -36,75 +60,133 @@ public class PoblacionEnemigos {
 	private static double MUTACION = 5;
 
 	public PoblacionEnemigos(String type) {
-		/*
-		 * Orcos         +flecs      -magia-arti 
-		 * ElfosOscuros  +magia      -flec-arti 
-		 * Mercenarios   +flec+arti  -magia 
-		 * Harpias       ~flec~magia
-		 */
-		this.tipo = type;
-		switch(tipo){
-		case "orcos":
-			pV = 0.15;
-			pF = 0.9;
-			pM = 0.18;
-			pA = 0.18;
-			break;
-		case "elfososcuros":
-			pV = 0.1;
-			pF = 0.18;
-			pM = 0.9;
-			pA = 0.18;
-			break;
-		case "mercenarios":
-			pV = 0.15;
-			pF = 0.9;
-			pM = 0.18;
-			pA = 0.9;
-			break;
-		case "harpias":
-			pV = 0.1;
-			pF = 0.18;
-			pM = 0.18;
-			pA = 0.18;
+		try {
+			String filepath = "Poblaciones.xml";
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(filepath);			
+			this.tipo = type;			
+			nodoPob = doc.getElementsByTagName(tipo).item(0);
+			switch (tipo) {
+			case "orcos":
+				pV = 0.15;
+				pF = 0.9;
+				pM = 0.18;
+				pA = 0.18;
+				nodoIni = doc.getElementsByTagName("inicialo").item(0);
+				nodoPos = doc.getElementsByTagName("lastPosto").item(0);
+				nodoGen = doc.getElementsByTagName("generacioneso").item(0);
+				break;
+				
+			case "elfososcuros":
+				pV = 0.1;
+				pF = 0.18;
+				pM = 0.9;
+				pA = 0.18;
+				nodoIni = doc.getElementsByTagName("iniciale").item(0);
+				nodoPos = doc.getElementsByTagName("lastPoste").item(0);
+				nodoGen = doc.getElementsByTagName("generacionese").item(0);
+				break;
+				
+			case "mercenarios":
+				pV = 0.15;
+				pF = 0.9;
+				pM = 0.18;
+				pA = 0.9;
+				nodoIni = doc.getElementsByTagName("inicialm").item(0);
+				nodoPos = doc.getElementsByTagName("lastPostm").item(0);
+				nodoGen = doc.getElementsByTagName("generacionesm").item(0);
+				break;
+				
+			case "harpias":				
+				pV = 0.1;
+				pF = 0.18;
+				pM = 0.18;
+				pA = 0.18;
+				nodoIni = doc.getElementsByTagName("inicialh").item(0);
+				nodoPos = doc.getElementsByTagName("lastPosth").item(0);
+				nodoGen = doc.getElementsByTagName("generacionesh").item(0);
+				break;
+			}
+			int numIni = Integer.parseInt(nodoIni.getTextContent());
+			if(numIni == 0){
+				generarPoblacion();				
+				String poblacion = "";
+				for(int i = 0; i < lastPost; i++){
+					if(i == (lastPost - 1)){
+						poblacion += Arrays.toString(POBLACION[i]);
+					}else{
+						poblacion += Arrays.toString(POBLACION[i]) + ",";
+					}
+				}				
+				String lastPo = String.valueOf(lastPost);
+				lastPo = Integer.toString(lastPost);
+				nodoPos.setTextContent(lastPo);
+				nodoPob.setTextContent(poblacion);
+				nodoIni.setTextContent("1");
+				
+			}else{
+				String temp = nodoPob.getTextContent();
+				String[] items = temp.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+				llenarPobla(items);
+				lastPost = Integer.parseInt(nodoPos.getTextContent());
+				genActual = Integer.parseInt(nodoGen.getTextContent());				
+				
+			}
+			
+
+			// Todo lo q se tenga q hacer va arriba de esto para actualizar el
+			// XML
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(filepath));
+			transformer.transform(source, result);
+
+		} catch (ParserConfigurationException pce) {
+			pce.printStackTrace();
+		} catch (TransformerException tfe) {
+			tfe.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (SAXException sae) {
+			sae.printStackTrace();
 		}
-		generarPoblacion();
 	}
 	
+	public void llenarPobla(String[] items){
+		int num = 0;
+		for (int i = 0; i < items.length/5; i++) {
+			for (int j = 0; j < 5; j++) {
+				POBLACION[i][j] = Integer.parseInt(items[num]);
+				num += 1;
+			}
+		}
+	}
+	
+	//lista
 	public void generarPoblacion() {
 		for (int i = 0; i < 100; i++) {
 			lastPost = i + 1;
 			for (int j = 0; j < 5; j++) {
 				switch (j) {
-				/*
-				 * Orcos         +flecs      -magia-arti 
-				 * ElfosOscuros  +magia      -flec-arti 
-				 * Mercenarios   +flec+arti  -magia 
-				 * Harpias       ~flec~magia
-				 */
 				case 0:
-					switch(tipo){
+					switch (tipo) {
 					case "orcos":
 						POBLACION[i][j] = (int) (rnd.nextInt((60 - 20) + 1) + 20);
 						break;
 					case "elfososcuros":
-						POBLACION[i][j] = (int) (rnd.nextInt((50 - 20) + 1) + 20);
+						POBLACION[i][j] = (int) (rnd.nextInt((40 - 20) + 1) + 20);
 						break;
 					case "mercenarios":
-						POBLACION[i][j] = (int) (rnd.nextInt((70 - 20) + 1) + 20);
+						POBLACION[i][j] = (int) (rnd.nextInt((60 - 20) + 1) + 20);
 						break;
 					case "harpias":
 						POBLACION[i][j] = (int) (rnd.nextInt((40 - 20) + 1) + 20);
-					}					
+					}
 					break;
-				case 1:					
-					switch(tipo){
-					/*
-					 * Orcos         +flecs      -magia-arti 
-					 * ElfosOscuros  +magia      -flec-arti 
-					 * Mercenarios   +flec+arti  -magia 
-					 * Harpias       ~flec~magia~arti
-					 */
+				case 1:
+					switch (tipo) {
 					case "orcos":
 						POBLACION[i][j] = (int) (rnd.nextInt((8 - 3) + 1) + 3);
 						break;
@@ -119,13 +201,7 @@ public class PoblacionEnemigos {
 					}
 					break;
 				case 2:
-					/*
-					 * Orcos         +flecs      -magia-arti 
-					 * ElfosOscuros  +magia      -flec-arti 
-					 * Mercenarios   +flec+arti  -magia 
-					 * Harpias       ~flec~magia
-					 */
-					switch(tipo){
+					switch (tipo) {
 					case "orcos":
 						POBLACION[i][j] = (int) (rnd.nextInt((5 - 3) + 1) + 3);
 						break;
@@ -140,13 +216,7 @@ public class PoblacionEnemigos {
 					}
 					break;
 				case 3:
-					/*
-					 * Orcos         +flecs      -magia-arti 
-					 * ElfosOscuros  +magia      -flec-arti 
-					 * Mercenarios   +flec+arti  -magia 
-					 * Harpias       ~flec~magia
-					 */					
-					switch(tipo){
+					switch (tipo) {
 					case "orcos":
 						POBLACION[i][j] = (int) (rnd.nextInt((5 - 3) + 1) + 3);
 						break;
@@ -166,17 +236,16 @@ public class PoblacionEnemigos {
 				}
 			}
 		}
-		Ordenar();
-
-	}
-
-	public void Ordenar() {
+		Ordenar(POBLACION);		
+	}		
+   //lista
+	public void Ordenar(int[][] list) {
 		for (int i = 0; i < lastPost - 1; i++) {
 			for (int j = 0; j < lastPost - 1; j++) {
-				if (POBLACION[j][4] < POBLACION[j + 1][4]) {
-					int[] temp = POBLACION[j + 1];
-					POBLACION[j + 1] = POBLACION[j];
-					POBLACION[j] = temp;
+				if (list[j][4] < list[j + 1][4]) {
+					int[] temp = list[j + 1];
+					list[j + 1] = list[j];
+					list[j] = temp;
 
 				}
 			}
@@ -205,12 +274,14 @@ public class PoblacionEnemigos {
 		 */
 		int k[][] = new int[cant][5];
 		for (int i = 0; i < cant; i++) {
+			//
 			mV = (int) (rnd.nextInt((100 - 0) + 1) + 0);
 			mF = (int) (rnd.nextInt((100 - 0) + 1) + 0);
 			mM = (int) (rnd.nextInt((100 - 0) + 1) + 0);
 			mA = (int) (rnd.nextInt((100 - 0) + 1) + 0);
-			// System.out.println(mV + " " + mF + " " + mM + " " + mA);
+			
 			for (int j = 0; j < 5; j++) {
+
 				switch (j) {
 				case 0:
 					if (mV <= MUTACION) {
@@ -249,23 +320,87 @@ public class PoblacionEnemigos {
 			}
 
 		}
-		/*
-		 * System.out.println("--------------Hijos--------------");
-		 * System.out.println("*V***F**M**A**FI*"); for(int i = 0; i < cant;
-		 * i++){ System.out.println(Arrays.toString(k[i])); }
-		 */
+		//Llena la poblacion q hay con los nuevos creados
 		for (int i = 0; i < cant; i++) {
 			POBLACION[lastPost + i] = k[i];
 		}
 		lastPost += cant;
 		genActual += 1;
-		Ordenar();
+		Ordenar(POBLACION);
+		try {
+			String filepath = "Poblaciones.xml";
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(filepath);
+			nodoPob = doc.getElementsByTagName(tipo).item(0);
+			switch (tipo) {
+			case "orcos":
+				nodoIni = doc.getElementsByTagName("inicialo").item(0);
+				nodoPos = doc.getElementsByTagName("lastPosto").item(0);
+				nodoGen = doc.getElementsByTagName("generacioneso").item(0);
+				break;
+
+			case "elfososcuros":
+				nodoIni = doc.getElementsByTagName("iniciale").item(0);
+				nodoPos = doc.getElementsByTagName("lastPoste").item(0);
+				nodoGen = doc.getElementsByTagName("generacionese").item(0);
+				break;
+
+			case "mercenarios":
+				nodoIni = doc.getElementsByTagName("inicialm").item(0);
+				nodoPos = doc.getElementsByTagName("lastPostm").item(0);
+				nodoGen = doc.getElementsByTagName("generacionesm").item(0);
+				break;
+
+			case "harpias":
+				nodoIni = doc.getElementsByTagName("inicialh").item(0);
+				nodoPos = doc.getElementsByTagName("lastPosth").item(0);
+				nodoGen = doc.getElementsByTagName("generacionesh").item(0);
+				break;
+			}
+			String poblacion = "";
+			for (int i = 0; i < lastPost; i++) {
+				if (i == (lastPost - 1)) {
+					poblacion += Arrays.toString(POBLACION[i]);
+				} else {
+					poblacion += Arrays.toString(POBLACION[i]) + ",";
+				}
+			}
+			genActual = Integer.parseInt(nodoGen.getTextContent());
+			genActual += 1;
+			
+			String genAc = String.valueOf(genActual);
+			String lastPo = String.valueOf(lastPost);
+			lastPo = Integer.toString(lastPost);
+			genAc = Integer.toString(genActual);
+					
+			
+			//Se actualizan Datos del XML
+			nodoGen.setTextContent(genAc);
+			nodoPos.setTextContent(lastPo);
+			nodoPob.setTextContent(poblacion);
+
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(filepath));
+			transformer.transform(source, result);
+
+		} catch (ParserConfigurationException pce) {
+			pce.printStackTrace();
+		} catch (TransformerException tfe) {
+			tfe.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (SAXException sae) {
+			sae.printStackTrace();
+		}
+
 	}
 	
 	public int[][] Obtener(int cant) {
-		int[][] k = new int[cant][5];
+		int[][] k = new int[cant][5];		
 		if ((GENERACIONES - genActual) != 0) {
-			System.out.println("Actual: " + (GENERACIONES - genActual));
 			nuevaGeneracion(cantHIJOS);
 			for (int i = 0; i < cant; i++) {
 				k[i] = POBLACION[i];
@@ -279,8 +414,8 @@ public class PoblacionEnemigos {
 		}
 	}
 
-	public void printPoblacion() {
-		for (int i = 0; i < lastPost; i++) {
+	public void printPoblacion(int num) {
+		for (int i = 0; i < num; i++) {
 			System.out.println(Arrays.toString(POBLACION[i]) + "   " + i);
 		}
 	}

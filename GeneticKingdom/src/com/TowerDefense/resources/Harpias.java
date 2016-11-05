@@ -29,11 +29,16 @@ public class Harpias {
 		oleada = harpias.Obtener(10);
 		String pob = "";
 		for (int i = 0; i < 10; i++) {
-			pob += Arrays.toString(oleada[i]);
+			if(i == 9){
+				pob += Arrays.toString(oleada[i]) ;
+			}else{
+				pob += Arrays.toString(oleada[i]) + ", ";
+			}	
 		}
+		System.out.println(pob);
 		return "<html>" + "<title>" + "Harpias" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#008000>" + pob + "</h1></font>"
+		+ "<h2><font color=#008000>" + pob + "</h2></font>"
 		+ "</body></html";
 	}
 }

@@ -30,7 +30,11 @@ public class ElfosOscuros {
 		oleada = elfos.Obtener(10);
 		String pob = "";
 		for (int i = 0; i < 10; i++) {
-			pob += Arrays.toString(oleada[i]);			
+			if(i == 9){
+				pob += Arrays.toString(oleada[i]) ;
+			}else{
+				pob += Arrays.toString(oleada[i]) + ", ";
+			}						
 		}
 		return "<html>" + "<title>" + "Elfos Oscuros" + "</title>"
 		+ "<body>"

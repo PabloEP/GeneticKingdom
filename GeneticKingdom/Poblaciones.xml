@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><poblaciones>	
+	<inicialo>0</inicialo>
+	<generacioneso>0</generacioneso>
+	<lastPosto>0</lastPosto>
+	
+	<iniciale>0</iniciale>
+	<generacionese>0</generacionese>
+	<lastPoste>0</lastPoste>
+	
+	<inicialm>0</inicialm>
+	<generacionesm>0</generacionesm>
+	<lastPostm>0</lastPostm>
+	
+	<inicialh>0</inicialh>
+	<generacionesh>0</generacionesh>
+	<lastPosth>0</lastPosth>
+		
+	<elfososcuros></elfososcuros>
+	<mercenarios></mercenarios>
+	<harpias></harpias>
+	<orcos></orcos>
+	
+</poblaciones>
