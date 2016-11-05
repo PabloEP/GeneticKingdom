@@ -6,8 +6,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -15,18 +13,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import java.util.*;
 
 public class PoblacionEnemigos {
 	
 	
-	int FILAS = 2000, COLUMNAS = 5, cantHIJOS = 20;
+	int FILAS = 3000, COLUMNAS = 5, cantHIJOS = 20;
 	int[][] POBLACION = new int[FILAS][COLUMNAS];
 	int GENERACIONES = 50;
 	int genActual = 0;
@@ -51,11 +44,9 @@ public class PoblacionEnemigos {
 	 * pF = porcentaje de la resistencia a las flechas
 	 * pM = porcentaje de la resistencia a la magia
 	 * pA = porcentaje de la resistencia a la artilleria
-	 */	
-	double pV;
-	double pF;
-	double pM;
-	double pA;
+	 */
+	//Puntos que se le añadiran a la vida y resistencias
+	int pV, pF, pM, pA;
 	/* Porcentaje para que se de la mutacion # = % */
 	private static double MUTACION = 5;
 
@@ -69,40 +60,40 @@ public class PoblacionEnemigos {
 			nodoPob = doc.getElementsByTagName(tipo).item(0);
 			switch (tipo) {
 			case "orcos":
-				pV = 0.15;
-				pF = 0.9;
-				pM = 0.18;
-				pA = 0.18;
+				pV = 35;
+				pF = 6;
+				pM = 3;
+				pA = 3;
 				nodoIni = doc.getElementsByTagName("inicialo").item(0);
 				nodoPos = doc.getElementsByTagName("lastPosto").item(0);
 				nodoGen = doc.getElementsByTagName("generacioneso").item(0);
 				break;
 				
 			case "elfososcuros":
-				pV = 0.1;
-				pF = 0.18;
-				pM = 0.9;
-				pA = 0.18;
+				pV = 25;
+				pF = 3;
+				pM = 6;
+				pA = 3;
 				nodoIni = doc.getElementsByTagName("iniciale").item(0);
 				nodoPos = doc.getElementsByTagName("lastPoste").item(0);
 				nodoGen = doc.getElementsByTagName("generacionese").item(0);
 				break;
 				
 			case "mercenarios":
-				pV = 0.15;
-				pF = 0.9;
-				pM = 0.18;
-				pA = 0.9;
+				pV = 35;
+				pF = 6;
+				pM = 3;
+				pA = 6;
 				nodoIni = doc.getElementsByTagName("inicialm").item(0);
 				nodoPos = doc.getElementsByTagName("lastPostm").item(0);
 				nodoGen = doc.getElementsByTagName("generacionesm").item(0);
 				break;
 				
 			case "harpias":				
-				pV = 0.1;
-				pF = 0.18;
-				pM = 0.18;
-				pA = 0.18;
+				pV = 20;
+				pF = 3;
+				pM = 3;
+				pA = 3;
 				nodoIni = doc.getElementsByTagName("inicialh").item(0);
 				nodoPos = doc.getElementsByTagName("lastPosth").item(0);
 				nodoGen = doc.getElementsByTagName("generacionesh").item(0);
@@ -285,31 +276,31 @@ public class PoblacionEnemigos {
 				switch (j) {
 				case 0:
 					if (mV <= MUTACION) {
-						k[i][j] = (int) (par[i][j] + ((par[i][j] * pV) * 2));
+						k[i][j] = (int) (par[i][j] + ( pV * 2));
 					} else {
-						k[i][j] = (int) (par[i][j] + (par[i][j] * pV));
+						k[i][j] = (int) (par[i][j] + pV);
 					}
 
 					break;
 				case 1:
 					if (mF <= MUTACION) {
-						k[i][j] = (int) (par[i][j] + ((par[i][j] * pF) * 2));
+						k[i][j] = (int) (par[i][j] + (pF * 2));
 					} else {
-						k[i][j] = (int) (par[i][j] + (par[i][j] * pF));
+						k[i][j] = (int) (par[i][j] +  pF);
 					}
 					break;
 				case 2:
 					if (mM <= MUTACION) {
-						k[i][j] = (int) (par[i][j] + ((par[i][j] * pM) * 2));
+						k[i][j] = (int) (par[i][j] + ( pM * 2));
 					} else {
-						k[i][j] = (int) (par[i][j] + (par[i][j] * pM));
+						k[i][j] = (int) (par[i][j] + pM);
 					}
 					break;
 				case 3:
 					if (mA <= MUTACION) {
-						k[i][j] = (int) (par[i][j] + ((par[i][j] * pA) * 2));
+						k[i][j] = (int) (par[i][j] + ( pA * 2));
 					} else {
-						k[i][j] = (int) (par[i][j] + (par[i][j] * pA));
+						k[i][j] = (int) (par[i][j] + pA);
 					}
 					break;
 				case 4:
@@ -418,5 +409,8 @@ public class PoblacionEnemigos {
 		for (int i = 0; i < num; i++) {
 			System.out.println(Arrays.toString(POBLACION[i]) + "   " + i);
 		}
+	}
+	public String generacion(){
+		return this.generacion();
 	}
 }

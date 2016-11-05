@@ -35,7 +35,6 @@ public class Harpias {
 				pob += Arrays.toString(oleada[i]) + ", ";
 			}	
 		}
-		System.out.println(pob);
 		return "<html>" + "<title>" + "Harpias" + "</title>"
 		+ "<body>"
 		+ "<h2><font color=#008000>" + pob + "</h2></font>"
