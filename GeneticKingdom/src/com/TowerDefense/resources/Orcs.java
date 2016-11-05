@@ -21,12 +21,6 @@ public class Orcs {
 	@GET
 	@Produces(MediaType.TEXT_XML)
 	public String enviarXMLOrcos(){
-		return "<?xml version\"1.0\"?>" + "<orcos> Orcos xml" + "</orcos>";
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String enviarHTMLOrcos(){
 		int[][] oleada = new int[10][5];		
 		oleada = Orcos.Obtener(10);
 		String pob = "";
@@ -37,9 +31,20 @@ public class Orcs {
 				pob += Arrays.toString(oleada[i]) + ", ";
 			}				
 		}
+		return "<?xml version\"1.0\"?>" + "<orcos>" + pob + "</orcos>";
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public String enviarHTMLOrcos(){
+		int[][] oleada = new int[10][5];		
+		oleada = Orcos.Obtener(10);
 		return "<html>" + "<title>" + "Orcos" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#008000>" + pob + "</h1></font>"
+		+ "<h1><font color=#018736>" + "Oleada" + "</h1></font>"
+		+ "<h1><font color=#018736>" + Orcos.Oleada() + "</h1></font>"
+		+ "<h1><font color=#018736>" + "Generacion" + "</h1></font>"
+		+ "<h1><font color=#018736>" + Orcos.generacion() + "</h1></font>"
 		+ "</body></html";
 	} 
 }

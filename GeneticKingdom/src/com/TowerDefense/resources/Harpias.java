@@ -19,12 +19,6 @@ public class Harpias {
 	@GET
 	@Produces(MediaType.TEXT_XML)
 	public String enviarXMLHarpias(){
-		return "<?xml version\"1.0\"?>" + "<orcos> Harpias xml" + "</orcos>";
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String enviarHTMLHarpias(){
 		int[][] oleada = new int[10][5];		
 		oleada = harpias.Obtener(10);
 		String pob = "";
@@ -35,9 +29,20 @@ public class Harpias {
 				pob += Arrays.toString(oleada[i]) + ", ";
 			}	
 		}
+		return "<?xml version\"1.0\"?>" + "<harpias>" + pob + "</harpias>";
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public String enviarHTMLHarpias(){
+		int[][] oleada = new int[10][5];		
+		oleada = harpias.Obtener(10);
 		return "<html>" + "<title>" + "Harpias" + "</title>"
 		+ "<body>"
-		+ "<h2><font color=#008000>" + pob + "</h2></font>"
+		+ "<h1><font color=#ffe900>" + "Oleada" + "</h1></font>"
+		+ "<h1><font color=#ffe900>" + harpias.Oleada() + "</h1></font>"
+		+ "<h1><font color=#ffe900>" + "Generacion" + "</h1></font>"
+		+ "<h1><font color=#ffe900>" + harpias.generacion() + "</h1></font>"
 		+ "</body></html";
 	}
 }

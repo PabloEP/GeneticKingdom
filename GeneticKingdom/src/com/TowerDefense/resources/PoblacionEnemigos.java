@@ -411,6 +411,22 @@ public class PoblacionEnemigos {
 		}
 	}
 	public String generacion(){
-		return this.generacion();
+		String gen = "";
+		gen = String.valueOf(genActual);
+		gen = Integer.toString(genActual);
+		return gen;
 	}
+	
+	public String Oleada(){
+		String oleada = "";
+		for(int i = 0; i < 10; i++){
+			if(i == 9){
+				oleada += Arrays.toString(POBLACION[i]);
+			}else{
+			oleada += Arrays.toString(POBLACION[i]) + ",";
+			}		
+		}
+		return oleada;
+	}
+	
 }

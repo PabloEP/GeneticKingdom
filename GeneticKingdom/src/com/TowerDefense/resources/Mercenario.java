@@ -19,12 +19,6 @@ public class Mercenario {
 	@GET
 	@Produces(MediaType.TEXT_XML)
 	public String enviarXMLMercenarios(){
-		return "<?xml version\"1.0\"?>" + "<orcos> Mercenarios xml" + "</orcos>";
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String enviarHTMLMercenarios(){
 		int[][] oleada = new int[10][5];
 		oleada = mercenarios.Obtener(10);
 		String pob = "";
@@ -35,9 +29,20 @@ public class Mercenario {
 				pob += Arrays.toString(oleada[i]) + ", ";
 			}	
 		}
+		return "<?xml version\"1.0\"?>" + "<mercenarios>" + pob + "</mercenarios>";
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public String enviarHTMLMercenarios(){
+		int[][] oleada = new int[10][5];
+		oleada = mercenarios.Obtener(10);
 		return "<html>" + "<title>" + "Mercenarios" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#008000>" + pob + "</h1></font>"
+		+ "<h1><font color=#ff0015>" + "Oleada" + "</h1></font>"
+		+ "<h1><font color=#ff0015>" + mercenarios.Oleada() + "</h1></font>"
+		+ "<h1><font color=#ff0015>" + "Generacion" + "</h1></font>"
+		+ "<h1><font color=#ff0015>" + mercenarios.generacion() + "</h1></font>"
 		+ "</body></html";
 	}
 }

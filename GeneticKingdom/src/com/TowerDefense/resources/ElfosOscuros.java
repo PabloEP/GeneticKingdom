@@ -20,12 +20,6 @@ public class ElfosOscuros {
 	@GET
 	@Produces(MediaType.TEXT_XML)
 	public String enviarXMLElfosOscuros(){
-		return "<?xml version\"1.0\"?>" + "<orcos> Elfos Oscuros xml" + "</orcos>";
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String enviarHTMLElfosOscuros(){
 		int[][] oleada = new int[10][5];
 		oleada = elfos.Obtener(10);
 		String pob = "";
@@ -36,9 +30,20 @@ public class ElfosOscuros {
 				pob += Arrays.toString(oleada[i]) + ", ";
 			}						
 		}
+		return "<?xml version\"1.0\"?>" + "<elfososcuros>" + pob  + "</orcos>";
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public String enviarHTMLElfosOscuros(){
+		int[][] oleada = new int[10][5];
+		oleada = elfos.Obtener(10);
 		return "<html>" + "<title>" + "Elfos Oscuros" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#008000>" + pob + "</h1></font>"
+		+ "<h1><font color=#000cff>" + "Oleada" + "</h1></font>"
+		+ "<h1><font color=#000cff>" + elfos.Oleada() + "</h1></font>"
+		+ "<h1><font color=#000cff>" + "Generacion" + "</h1></font>"
+		+ "<h1><font color=#000cff>" + elfos.generacion() + "</h1></font>"
 		+ "</body></html";
 	}	
 	
