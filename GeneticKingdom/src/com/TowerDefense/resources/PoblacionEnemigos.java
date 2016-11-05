@@ -61,7 +61,7 @@ public class PoblacionEnemigos {
 
 	public PoblacionEnemigos(String type) {
 		try {
-			String filepath = "Poblaciones.xml";
+			String filepath = "c:\\Users\\Pablo\\git\\GeneticKingdom\\GeneticKingdom\\src\\com\\TowerDefense\\resources\\Poblaciones.xml";
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(filepath);			
@@ -328,7 +328,7 @@ public class PoblacionEnemigos {
 		genActual += 1;
 		Ordenar(POBLACION);
 		try {
-			String filepath = "Poblaciones.xml";
+			String filepath = "c:\\Users\\Pablo\\git\\GeneticKingdom\\GeneticKingdom\\src\\com\\TowerDefense\\resources\\Poblaciones.xml";
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(filepath);
