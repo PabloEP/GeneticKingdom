@@ -38,13 +38,12 @@ public class Orcs {
 	@Produces(MediaType.TEXT_HTML)
 	public String enviarHTMLOrcos(){
 		int[][] oleada = new int[10][5];		
-		oleada = Orcos.Obtener(10);
+		//oleada = Orcos.Obtener(10);
 		return "<html>" + "<title>" + "Orcos" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#018736>" + "Oleada" + "</h1></font>"
-		+ "<h1><font color=#018736>" + Orcos.Oleada() + "</h1></font>"
-		+ "<h1><font color=#018736>" + "Generacion" + "</h1></font>"
-		+ "<h1><font color=#018736>" + Orcos.generacion() + "</h1></font>"
+		+ "<h2><font color=#018736>" + "Oleada Actual de Orcos: " + "</h2></font>"
+		+ "<h3><font color=#018736>" + Orcos.Oleada() + "</h3></font>"
+		+ "<h2><font color=#018736>" + "Generacion: " + Orcos.generacion() + "</h2></font>"
 		+ "</body></html";
 	} 
 }

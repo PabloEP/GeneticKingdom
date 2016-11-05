@@ -36,13 +36,12 @@ public class Mercenario {
 	@Produces(MediaType.TEXT_HTML)
 	public String enviarHTMLMercenarios(){
 		int[][] oleada = new int[10][5];
-		oleada = mercenarios.Obtener(10);
+		//oleada = mercenarios.Obtener(10);
 		return "<html>" + "<title>" + "Mercenarios" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#ff0015>" + "Oleada" + "</h1></font>"
-		+ "<h1><font color=#ff0015>" + mercenarios.Oleada() + "</h1></font>"
-		+ "<h1><font color=#ff0015>" + "Generacion" + "</h1></font>"
-		+ "<h1><font color=#ff0015>" + mercenarios.generacion() + "</h1></font>"
+		+ "<h2><font color=#ff0015>" + "Oleada de Mercenarios Actual:" + "</h2></font>"
+		+ "<h3><font color=#ff0015>" + mercenarios.Oleada() + "</h3></font>"
+		+ "<h2><font color=#ff0015>" + "Generacion: " +  mercenarios.generacion() + "</h2></font>"
 		+ "</body></html";
 	}
 }

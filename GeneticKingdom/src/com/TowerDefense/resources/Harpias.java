@@ -36,13 +36,12 @@ public class Harpias {
 	@Produces(MediaType.TEXT_HTML)
 	public String enviarHTMLHarpias(){
 		int[][] oleada = new int[10][5];		
-		oleada = harpias.Obtener(10);
+		//oleada = harpias.Obtener(10);
 		return "<html>" + "<title>" + "Harpias" + "</title>"
 		+ "<body>"
-		+ "<h1><font color=#ffe900>" + "Oleada" + "</h1></font>"
-		+ "<h1><font color=#ffe900>" + harpias.Oleada() + "</h1></font>"
-		+ "<h1><font color=#ffe900>" + "Generacion" + "</h1></font>"
-		+ "<h1><font color=#ffe900>" + harpias.generacion() + "</h1></font>"
+		+ "<h2><font color=#968900>" + "Oleada de Harpias Actual:" + "</h2></font>"
+		+ "<h3><font color=#968900>" + harpias.Oleada() + "</h3></font>"
+		+ "<h2><font color=#968900>" + "Generacion: "+ harpias.generacion() + "</h2></font>"
 		+ "</body></html";
 	}
 }
